@@ -3,29 +3,19 @@ var pp = require('..');
 
 test('should call a single job', function(t) {
     t.plan(1);
-    pp({}, [{action: function(ctx) {
+    pp([{action: function() {
         t.pass('job was called'); 
     }}]).resume();
 });
 
-test('should pass the right context', function(t) {
-    t.plan(1);
-    var ctx0 = {};
-    pp(ctx0, [{action: function(ctx) {
-        t.equal(ctx, ctx0); 
-    }}]).resume();
-});
-
 test('should call two jobs in series', function(t) {
-    t.plan(5);
-    var ctx0 = {};
-    pp(ctx0, [{action: function(ctx, next) {
-        t.equal(ctx, ctx0); 
+    t.plan(3);
+    var ctx = {};
+    pp([{action: function(next) {
         t.notOk(ctx.second);
         ctx.first = 'hello';
         next();
-    }}, {action: function(ctx, next) {
-        t.equal(ctx, ctx0); 
+    }}, {action: function(next) {
         t.ok(ctx.first);
         t.notOk(ctx.second);
         ctx.second = 'world';
@@ -35,11 +25,11 @@ test('should call two jobs in series', function(t) {
 
 test('should emit data, progress and end events', function(t) {
     t.plan(7);
-    var e = pp({}, [
-        {action: function(ctx, next) {
+    var e = pp([
+        {action: function(next) {
             next(null, 'hello');
         }}, 
-        {action: function(ctx, next) {
+        {action: function(next) {
             next(null, 'world');
         }}
     ]);
@@ -59,11 +49,11 @@ test('should emit data, progress and end events', function(t) {
 
 test('event should be correct for async jobs too', function(t) {
     t.plan(7);
-    var e = pp({}, [
-        {action: function(ctx, next) {
+    var e = pp([
+        {action: function(next) {
             setTimeout(function() {next(null, 'foo');}, 200);
         }}, 
-        {action: function(ctx, next) {
+        {action: function(next) {
             setTimeout(function() {next(null, 'bar');}, 200);
         }}
     ]);
@@ -84,11 +74,11 @@ test('event should be correct for async jobs too', function(t) {
 
 test('emits error and skips rest of jobs, if job failed', function(t) {
     t.plan(4);
-    var e = pp({}, [
-        {action: function(ctx, next) {
+    var e = pp([
+        {action: function(next) {
             next('error', 'hello');
         }}, 
-        {action: function(ctx, next) {
+        {action: function(next) {
             t.fail('2nd job called');
             next(null, 'world');
         }}

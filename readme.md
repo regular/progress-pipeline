@@ -10,23 +10,19 @@ Usage
 ---
 ```
 var series = require('progress-pipeline');
-var context = {
-    user: 'regular',
-    repo: 'progress-pipeline'
-};
 var jobs =[
     {
         name: 'cloning',
-        action: function(ctx, cb) {
-            gitClone(ctx.user + '/' + ctx.repo, function(err) {
-                cb(null, 'result2');
+        action: function(cb) {
+            gitClone(user + '/' + repo, function(err) {
+                cb(null, 'done cloning');
             });
         },
     }, {
         name: 'installing',
-        action: function(ctx, cb) {
-            shell('cd '+ ctx.repo +' && npm install', function(err) {
-                cb(null, 'result2');
+        action: function(cb) {
+            shell('cd '+ repo +' && npm install', function(err) {
+                cb(null, 'done installing');
             });
         }
     }
@@ -40,7 +36,7 @@ series(context, jobs).on('data', function(data) {
 output:
 ```
 cloning ...
-result1
+done cloning
 installing ...
-result2
+done installing
 ```

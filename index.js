@@ -1,12 +1,11 @@
 var from2 = require('from2');
 
-// ctx is an object that is passed to each job in turn
-// jobs is an array of {name: String, action: function(ctx, next) }
+// jobs is an array of {name: String, action: function(next) }
 // returns a Stream that emits 2 data events per job
 //   emits 'data', {job: {}, totalJobs: n, jobIndex: n}
 //   emits 'data', {result: <job's result>}
 
-module.exports = function(ctx, jobs) {
+module.exports = function(jobs) {
     var totalJobs = jobs.length;
     var jobIndex = 0;
     return from2.obj(function read(size, next) {
@@ -17,7 +16,7 @@ module.exports = function(ctx, jobs) {
             totalJobs: totalJobs,
             jobIndex: jobIndex++
         });
-        job.action(ctx, function(err, data) {
+        job.action(function(err, data) {
             next(err, {job:job, result: data});
         });
     });
