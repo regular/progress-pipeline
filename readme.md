@@ -29,14 +29,14 @@ var jobs =[
 ];
 
 series(context, jobs).on('data', function(data) {
-    console.log(data.result ? data.result : data.job.name + ' ...');
+    console.log(data.result ? data.result : data.jobIndex + '/' + data.totalJobs + data.job.name + ' ...');
 });
 ```
 
 output:
 ```
-cloning ...
+0/2 cloning ...
 done cloning
-installing ...
+1/2 installing ...
 done installing
 ```
