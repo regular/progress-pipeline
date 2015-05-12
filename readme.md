@@ -8,21 +8,21 @@ npm install progress-pipeline
 
 Usage
 ---
-```
+``` javascript
 var series = require('progress-pipeline');
 var jobs =[
     {
         name: 'cloning',
         action: function(cb) {
             gitClone(user + '/' + repo, function(err) {
-                cb(null, 'done cloning');
+                cb(err, 'done cloning');
             });
         },
     }, {
         name: 'installing',
         action: function(cb) {
             shell('cd '+ repo +' && npm install', function(err) {
-                cb(null, 'done installing');
+                cb(err, 'done installing');
             });
         }
     }
