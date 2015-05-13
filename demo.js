@@ -1,24 +1,22 @@
 var series = require('.');
-var jobs =[
-    {
-        name: 'cloning',
-        action: function(next) {
-            console.log('git clone');
-            setTimeout(function() {
-                next(null, 'done cloning');
-            }, 1000);
-        },
-    }, {
-        name: 'installing',
-        action: function(next) {
-            console.log('npm install');
-            setTimeout(function() {
-                next(null, 'done installing');
-            }, 1000);
-        }
-    }
-];
 
-series(jobs).on('data', function(data) {
-    console.log(data.result ? data.result : data.job.name + ' ...');
+function clone(next) {
+    console.log('git clone');
+    setTimeout(function() {
+        next(null, 'done cloning');
+    }, 1000);
+}
+
+function install(next) {
+    console.log('npm install');
+    setTimeout(function() {
+        next(null, 'done installing');
+    }, 1000);
+}
+
+clone.title = 'cloning';
+install.title = 'installing';
+
+series([clone, install]).on('data', function(data) {
+    console.log(data.result ? data.result : data.job.title + ' ...');
 });

@@ -3,35 +3,35 @@ var pp = require('..');
 
 test('should call a single job', function(t) {
     t.plan(1);
-    pp([{action: function() {
+    pp([function() {
         t.pass('job was called'); 
-    }}]).resume();
+    }]).resume();
 });
 
 test('should call two jobs in series', function(t) {
     t.plan(3);
     var ctx = {};
-    pp([{action: function(next) {
+    pp([function(next) {
         t.notOk(ctx.second);
         ctx.first = 'hello';
         next();
-    }}, {action: function(next) {
+    }, function(next) {
         t.ok(ctx.first);
         t.notOk(ctx.second);
         ctx.second = 'world';
         next();
-    }}]).resume();
+    }]).resume();
 });
 
 test('should emit data, progress and end events', function(t) {
     t.plan(7);
     var e = pp([
-        {action: function(next) {
+        function(next) {
             next(null, 'hello');
-        }}, 
-        {action: function(next) {
+        }, 
+        function(next) {
             next(null, 'world');
-        }}
+        }
     ]);
     var events = [];
     e.on('end', function() {
@@ -50,12 +50,12 @@ test('should emit data, progress and end events', function(t) {
 test('event should be correct for async jobs too', function(t) {
     t.plan(7);
     var e = pp([
-        {action: function(next) {
+        function(next) {
             setTimeout(function() {next(null, 'foo');}, 200);
-        }}, 
-        {action: function(next) {
+        }, 
+        function(next) {
             setTimeout(function() {next(null, 'bar');}, 200);
-        }}
+        }
     ]);
     var events = [];
     e.on('end', function() {
@@ -75,13 +75,13 @@ test('event should be correct for async jobs too', function(t) {
 test('emits error and skips rest of jobs, if job failed', function(t) {
     t.plan(4);
     var e = pp([
-        {action: function(next) {
+        function(next) {
             next('error', 'hello');
-        }}, 
-        {action: function(next) {
+        }, 
+        function(next) {
             t.fail('2nd job called');
             next(null, 'world');
-        }}
+        }
     ]);
     var events = [];
     e.on('error', function(data) {

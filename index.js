@@ -1,9 +1,9 @@
 var from2 = require('from2');
 
-// jobs is an array of {name: String, action: function(next) }
+// jobs is an array of function(next)
 // returns a Stream that emits 2 data events per job
-//   emits 'data', {job: {}, totalJobs: n, jobIndex: n}
-//   emits 'data', {result: <job's result>}
+//   emits 'data', {job: <function>, totalJobs: <n>, jobIndex: <n>}
+//   emits 'data', {job: <function>, result: <job's result (as passed to next as 2nd argument>}
 
 module.exports = function(jobs) {
     var totalJobs = jobs.length;
@@ -16,7 +16,7 @@ module.exports = function(jobs) {
             totalJobs: totalJobs,
             jobIndex: jobIndex++
         });
-        job.action(function(err, data) {
+        job(function(err, data) {
             next(err, {job:job, result: data});
         });
     });
