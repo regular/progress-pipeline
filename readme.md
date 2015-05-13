@@ -2,6 +2,8 @@ progress-pipeline
 ===
 Like async.series, but with a readable-stream interface for getting progress events.
 
+Installation
+---
 ```
 npm install progress-pipeline
 ```
@@ -35,4 +37,31 @@ output:
 done cloning
 1/2 installing ...
 done installing
+```
+
+Job Functions
+---
+Jobs are regular, node-style async functions, e.g. they are being called with an [error-first callback](http://fredkschott.com/post/2014/03/understanding-error-first-callbacks-in-node-js/) and are required to call that callback with an error and an optional result argument.
+
+_Note_ You can add properties to the job functions before putting them into the pipeline and you will have access to these prperties in your on('data') event handler. See [demo.js](./demo.js) for an example.
+
+Events
+---
+You get two `data` events per job
+
+* one when the job has started
+```
+{
+    job: <the job-function you provided>
+    jobIndex: <zero-based index of this job>
+    totalJobs: <total number of jobs in the pipeline>
+}
+```
+
+* and one when the job has finished
+```
+{
+    job: <the job-function you provided>
+    result: <the job's result>
+}
 ```
