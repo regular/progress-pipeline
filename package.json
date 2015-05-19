@@ -1,6 +1,6 @@
 {
   "name": "progress-pipeline",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "execute async functions in sequence and get events about their progress",
   "main": "index.js",
   "scripts": {
