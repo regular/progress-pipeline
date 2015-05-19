@@ -14,10 +14,15 @@ module.exports = function(jobs) {
         this.push({
             job: job,
             totalJobs: totalJobs,
-            jobIndex: jobIndex++
+            jobIndex: jobIndex
         });
         job(function(err, data) {
-            next(err, {job:job, result: data});
+            next(err, {
+                job:job, 
+                totalJobs: totalJobs,
+                jobIndex: jobIndex++,
+                result: data
+            });
         });
     });
 };
