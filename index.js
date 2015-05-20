@@ -17,11 +17,11 @@ module.exports = function(jobs) {
             jobIndex: jobIndex,
             totalJobs: totalJobs
         };
-        this.push(ctx);
+        this.push(extend({jobFinished: false}, ctx));
         job(function(err, data) {
             ++jobIndex;
             if (err) extend(err, ctx);
-            next(err, extend({result: data}, ctx));
+            next(err, extend({result: data, jobFinished: true}, ctx));
         });
     });
 };

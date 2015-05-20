@@ -18,5 +18,5 @@ clone.title = 'cloning';
 install.title = 'installing';
 
 series([clone, install]).on('data', function(data) {
-    console.log(data.result ? data.result : data.job.title + ' ...');
+    console.log(data.jobFinished ? data.result : data.job.title + ' ...');
 });

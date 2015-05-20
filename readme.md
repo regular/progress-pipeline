@@ -27,7 +27,7 @@ var jobs =[
 ];
 
 series(jobs).on('data', function(data) {
-    console.log(data.result ? data.result : data.jobIndex + '/' + data.totalJobs + data.job.name + ' ...');
+    console.log(data.jobFinished ? data.result : data.jobIndex + '/' + data.totalJobs + data.job.name + ' ...');
 });
 ```
 
@@ -52,6 +52,7 @@ You get two `data` events per job
 * one when the job has started
 ```
 {
+    jobFinished: false,
     job: <the job-function you provided>
     jobIndex: <zero-based index of this job>
     totalJobs: <total number of jobs in the pipeline>
@@ -61,7 +62,21 @@ You get two `data` events per job
 * and one when the job has finished
 ```
 {
+    jobFinished: true,
     job: <the job-function you provided>
+    jobIndex: <zero-based index of this job>
+    totalJobs: <total number of jobs in the pipeline>
     result: <the job's result>
+}
+```
+
+In case a job fails, the stream emits an `error` event.
+The emitted error has the following additional properties:
+
+```
+{
+    job: <the job-function you provided>
+    jobIndex: <zero-based index of this job>
+    totalJobs: <total number of jobs in the pipeline>
 }
 ```
