@@ -1,4 +1,5 @@
 var from2 = require('from2');
+var extend = require('extend');
 
 // jobs is an array of function(next)
 // returns a Stream that emits 2 data events per job
@@ -11,18 +12,16 @@ module.exports = function(jobs) {
     return from2.obj(function read(size, next) {
         if (jobs.length <= 0) return this.push(null);
         var job = jobs.shift();
-        this.push({
+        var ctx = {
             job: job,
-            totalJobs: totalJobs,
-            jobIndex: jobIndex
-        });
+            jobIndex: jobIndex,
+            totalJobs: totalJobs
+        };
+        this.push(ctx);
         job(function(err, data) {
-            next(err, {
-                job:job, 
-                totalJobs: totalJobs,
-                jobIndex: jobIndex++,
-                result: data
-            });
+            ++jobIndex;
+            if (err) extend(err, ctx);
+            next(err, extend({result: data}, ctx));
         });
     });
 };
